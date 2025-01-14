@@ -28,9 +28,9 @@ inputs:
   repository:
     description: >
       The repository owner and the repository name joined together by "/".
-      If github-token is specified, this is the repository that artifacts will be downloaded from.
-      required: false
-    default: github.repository
+      If github-token is specified, this is the repository that artifacts will be downloaded from. The default is
+      github.repository.
+    required: false
   # TODO: implement run-id
   run-id:
     description: >

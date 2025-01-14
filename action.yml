@@ -76,12 +76,12 @@ runs:
 
         # print inputs for debugging
         echo "::debug::Inputs:"
-        echo "::debug::\tname: $INPUT_NAME"
-        echo "::debug::\tpath: $INPUT_PATH"
-        echo "::debug::\tpattern: $INPUT_PATTERN"
-        echo "::debug::\tmerge-multiple: $INPUT_MERGE_MULTIPLE"
-        echo "::debug::\trepository: $INPUT_REPOSITORY"
-        echo "::debug::\run-id: $INPUT_RUN_ID"
+        echo "::debug::    name:            $INPUT_NAME"
+        echo "::debug::    path:            $INPUT_PATH"
+        echo "::debug::    pattern:         $INPUT_PATTERN"
+        echo "::debug::    merge-multiple:  $INPUT_MERGE_MULTIPLE"
+        echo "::debug::    repository:      $INPUT_REPOSITORY"
+        echo "::debug::    run-id:          $INPUT_RUN_ID"
 
         ACTION_PATH=$GITHUB_ACTION_PATH
         if [[ "${{ runner.os }}" == "Windows" ]]; then
@@ -91,13 +91,13 @@ runs:
 
         # run script
         $ACTION_PATH/main.sh \
-          INPUT_NAME \
-          INPUT_PATH \
-          INPUT_PATTERN \
-          INPUT_MERGE_MULTIPLE \
-          INPUT_REPOSITORY \
-          INPUT_RUN_ID \
-          RUNNER_OS \
-          ENV_S3_ARTIFACTS_BUCKET \
-          ENV_AWS_ACCESS_KEY_ID \
-          ENV_AWS_SECRET_ACCESS_KEY
+          $INPUT_NAME \
+          $INPUT_PATH \
+          $INPUT_PATTERN \
+          $INPUT_MERGE_MULTIPLE \
+          $INPUT_REPOSITORY \
+          $INPUT_RUN_ID \
+          $RUNNER_OS \
+          $ENV_S3_ARTIFACTS_BUCKET \
+          $ENV_AWS_ACCESS_KEY_ID \
+          $ENV_AWS_SECRET_ACCESS_KEY

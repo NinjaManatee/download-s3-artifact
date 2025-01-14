@@ -10,6 +10,19 @@ if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 . "$DIR/encoding.sh"
 #endregion
 
+#region read input arguments
+INPUT_NAME="$1"
+INPUT_PATH="$2"
+INPUT_PATTERN="$3"
+INPUT_MERGE_MULTIPLE="$4"
+INPUT_REPOSITORY="$5"
+INPUT_RUN_ID="$6"
+RUNNER_OS="$7"
+ENV_S3_ARTIFACTS_BUCKET="$8"
+ENV_AWS_ACCESS_KEY_ID="$9"
+ENV_AWS_SECRET_ACCESS_KEY="$10"
+#endregion
+
 #region validate input variables
 # validate script input variables
 if [[ "$INPUT_NAME" == "" ]]; then

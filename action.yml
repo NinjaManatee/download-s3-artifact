@@ -43,7 +43,7 @@ outputs:
     description: Path of artifact download
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Download artifact
       shell: bash
@@ -90,4 +90,14 @@ runs:
         fi
 
         # run script
-        $ACTION_PATH/main.sh
+        $ACTION_PATH/main.sh \
+          INPUT_NAME \
+          INPUT_PATH \
+          INPUT_PATTERN \
+          INPUT_MERGE_MULTIPLE \
+          INPUT_REPOSITORY \
+          INPUT_RUN_ID \
+          RUNNER_OS \
+          ENV_S3_ARTIFACTS_BUCKET \
+          ENV_AWS_ACCESS_KEY_ID \
+          ENV_AWS_SECRET_ACCESS_KEY

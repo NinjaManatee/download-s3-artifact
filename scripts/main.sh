@@ -11,11 +11,6 @@ if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 #endregion
 
 #region read input arguments
-for arg in "$@"
-do
-    echo "$arg"
-done
-
 INPUT_NAME="$1"
 INPUT_PATH="$2"
 INPUT_MERGE_MULTIPLE="$3"
@@ -73,7 +68,7 @@ fi
 
 #region create temp directories
 # make sure that the path directory exists
-mkdir -p "$INPUTS_PATH"
+mkdir -p "$INPUT_PATH"
 
 # ensure we have a unique temporary directory to download to
 TMP_ARTIFACT="$RUNNER_TEMP/download-s3-artifact"
@@ -119,19 +114,19 @@ echo "::debug::File downloaded successfully to $TMPFILE"
 
 # Downloaded a tarball, extract it
 # TODO: Should we check the path input to make sure it is in the project?
-echo "::debug::tar -xzvf '$TMPFILE' -C '$INPUTS_PATH' $TAR_CLI_ARGS"
-tar -xzvf "$TMPFILE" -C "$INPUTS_PATH" $TAR_CLI_ARGS
+echo "::debug::tar -xzvf '$TMPFILE' -C '$INPUT_PATH' $TAR_CLI_ARGS"
+tar -xzvf "$TMPFILE" -C "$INPUT_PATH" $TAR_CLI_ARGS
 
 if [[ -n "$RUNNER_DEBUG" ]]; then
     echo "::debug::Contents of artifact path"
-    echo "$(tree -a '$INPUTS_PATH' 2>&1)"
+    echo "$(tree -a '$INPUT_PATH' 2>&1)"
 fi
 #endregion
 
 #region generate outputs
 # set output
 # TODO: I don't think this output is correct. Need to investigate.
-echo "download-path='$INPUTS_PATH'" >>$GITHUB_OUTPUT
+echo "download-path='$INPUT_PATH'" >>$GITHUB_OUTPUT
 #endregion
 
 #region clean up temp dir

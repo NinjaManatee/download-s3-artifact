@@ -60,9 +60,9 @@ runs:
         if [[ "$INPUT_REPOSITORY" == "" ]]; then
             INPUT_REPOSITORY="${{ github.repository }}"
         fi
-        INPUT_RUN_ID="${{ inputs.run-id }}"
+        INPUT_RUN_ID="${{ github.run_id }}"
         if [[ "$INPUT_RUN_ID" == "" ]]; then
-            INPUT_RUN_ID="${{ github.run-id }}"
+            INPUT_RUN_ID="${{ github.run_id }}"
         fi
 
         # read github actions variables

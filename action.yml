@@ -55,7 +55,7 @@ runs:
             INPUT_PATH="${{ github.workspace }}"
         fi
         INPUT_PATTERN="${{ inputs.pattern }}"
-        INPUT_MERGE_MULTIPLE="${{ inputs.merge_multiple }}"
+        INPUT_MERGE_MULTIPLE="${{ inputs.merge-multiple }}"
         INPUT_REPOSITORY="${{ inputs.repository }}"
         if [[ "$INPUT_REPOSITORY" == "" ]]; then
             INPUT_REPOSITORY="${{ github.repository }}"

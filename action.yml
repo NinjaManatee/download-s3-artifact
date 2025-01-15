@@ -49,30 +49,33 @@ runs:
       shell: bash
       run: |
         # read inputs into variables
-        INPUT_NAME="${{ inputs.name }}"
-        INPUT_PATH="${{ inputs.path }}"
-        if [[ "$INPUT_PATH" == "" ]]; then
-            INPUT_PATH="${{ github.workspace }}"
+        export INPUT_NAME="${{ inputs.name }}"
+        if [[ "${{ inputs.path }}" == "" ]]; then
+          export INPUT_PATH="${{ github.workspace }}"
+        else
+          export INPUT_PATH="${{ inputs.path }}"
         fi
-        INPUT_PATTERN="${{ inputs.pattern }}"
-        INPUT_MERGE_MULTIPLE="${{ inputs.merge-multiple }}"
-        INPUT_REPOSITORY="${{ inputs.repository }}"
-        if [[ "$INPUT_REPOSITORY" == "" ]]; then
-            INPUT_REPOSITORY="${{ github.repository }}"
+        export INPUT_PATTERN="${{ inputs.pattern }}"
+        export INPUT_MERGE_MULTIPLE="${{ inputs.merge-multiple }}"
+        if [[ "${{ inputs.repository }}" == "" ]]; then
+          export INPUT_REPOSITORY="${{ github.repository }}"
+        else
+          export INPUT_REPOSITORY="${{ inputs.repository }}"
         fi
-        INPUT_RUN_ID="${{ github.run_id }}"
-        if [[ "$INPUT_RUN_ID" == "" ]]; then
-            INPUT_RUN_ID="${{ github.run_id }}"
+        if [[ "${{ inputs.run_id }}" == "" ]]; then
+          export INPUT_RUN_ID="${{ github.run_id }}"
+        else
+          export INPUT_RUN_ID="${{ inputs.run_id }}"
         fi
 
         # read github actions variables
-        RUNNER_OS="${{ runner.os }}"
+        export RUNNER_OS="${{ runner.os }}"
 
         # read environment variables
         # TODO: Are these necessary since they are already environment variables?
-        ENV_S3_ARTIFACTS_BUCKET="${{ env.S3_ARTIFACTS_BUCKET }}"
-        ENV_AWS_ACCESS_KEY_ID="${{ env.AWS_ACCESS_KEY_ID }}"
-        ENV_AWS_SECRET_ACCESS_KEY="${{ env.AWS_SECRET_ACCESS_KEY }}"
+        export ENV_S3_ARTIFACTS_BUCKET="${{ env.S3_ARTIFACTS_BUCKET }}"
+        export ENV_AWS_ACCESS_KEY_ID="${{ env.AWS_ACCESS_KEY_ID }}"
+        export ENV_AWS_SECRET_ACCESS_KEY="${{ env.AWS_SECRET_ACCESS_KEY }}"
 
         # print inputs for debugging
         echo "::debug::Inputs:"
@@ -94,14 +97,4 @@ runs:
         fi
 
         # run script
-        $ACTION_PATH/scripts/main.sh \
-          $INPUT_NAME \
-          $INPUT_PATH \
-          $INPUT_MERGE_MULTIPLE \
-          $INPUT_REPOSITORY \
-          $INPUT_RUN_ID \
-          $RUNNER_OS \
-          $ENV_S3_ARTIFACTS_BUCKET \
-          $ENV_AWS_ACCESS_KEY_ID \
-          $ENV_AWS_SECRET_ACCESS_KEY \
-          $INPUT_PATTERN
+        $ACTION_PATH/scripts/main.sh

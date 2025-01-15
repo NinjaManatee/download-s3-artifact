@@ -20,7 +20,7 @@ RUNNER_OS="$6"
 ENV_S3_ARTIFACTS_BUCKET="$7"
 ENV_AWS_ACCESS_KEY_ID="$8"
 ENV_AWS_SECRET_ACCESS_KEY="$9"
-INPUT_PATTERN="$10"
+INPUT_PATTERN="${10}"
 #endregion
 
 #region validate input variables

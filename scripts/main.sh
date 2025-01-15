@@ -33,10 +33,6 @@ if [[ "$INPUT_PATH" == "" ]]; then
     echo "::error::The values of 'PATH' input is not specified"
 fi
 
-if [[ "$INPUT_PATTERN" == "" ]]; then
-    echo "::error::The values of 'INPUT_PATTERN' input is not specified"
-fi
-
 if [[ "$INPUT_MERGE_MULTIPLE" == "" ]]; then
     echo "::error::The values of 'INPUT_MERGE_MULTIPLE' input is not specified"
 fi

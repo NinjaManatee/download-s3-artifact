@@ -48,5 +48,5 @@ source "$DIR/../scripts/main.sh"
 
 #region verify that the untar happened correctly
 echo "Comparing folders"
-diff -r "$INPUT_PATH" "origTmp"
+diff -r "$INPUT_PATH/origTmp" "origTmp"
 #endregion

@@ -24,14 +24,12 @@ inputs:
       If false, the downloaded artifacts will be extracted into individual named directories within the specified path.
     required: false
     default: false
-  # TODO: implement repository
   repository:
     description: >
       The repository owner and the repository name joined together by "/".
       If github-token is specified, this is the repository that artifacts will be downloaded from. The default is
       github.repository.
     required: false
-  # TODO: implement run-id
   run-id:
     description: >
       The id of the workflow run where the desired download artifact was uploaded from.

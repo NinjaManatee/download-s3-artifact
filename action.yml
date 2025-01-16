@@ -69,12 +69,6 @@ runs:
         # read github actions variables
         export RUNNER_OS="${{ runner.os }}"
 
-        # read environment variables
-        # TODO: Are these necessary since they are already environment variables?
-        export ENV_S3_ARTIFACTS_BUCKET="${{ env.S3_ARTIFACTS_BUCKET }}"
-        export ENV_AWS_ACCESS_KEY_ID="${{ env.AWS_ACCESS_KEY_ID }}"
-        export ENV_AWS_SECRET_ACCESS_KEY="${{ env.AWS_SECRET_ACCESS_KEY }}"
-
         # print inputs for debugging
         echo "::debug::Inputs:"
         echo "::debug::     name:                       $INPUT_NAME"
@@ -84,9 +78,9 @@ runs:
         echo "::debug::     repository:                 $INPUT_REPOSITORY"
         echo "::debug::     run-id:                     $INPUT_RUN_ID"
         echo "::debug::     runner.os:                  $RUNNER_OS"
-        echo "::debug::     S3_ARTIFACTS_BUCKET:        $ENV_S3_ARTIFACTS_BUCKET"
-        echo "::debug::     ENV_AWS_ACCESS_KEY_ID:      $ENV_AWS_ACCESS_KEY_ID"
-        echo "::debug::     ENV_AWS_SECRET_ACCESS_KEY:  $ENV_AWS_SECRET_ACCESS_KEY"
+        echo "::debug::     S3_ARTIFACTS_BUCKET:        $S3_ARTIFACTS_BUCKET"
+        echo "::debug::     AWS_ACCESS_KEY_ID:      $AWS_ACCESS_KEY_ID"
+        echo "::debug::     AWS_SECRET_ACCESS_KEY:  $AWS_SECRET_ACCESS_KEY"
 
         ACTION_PATH=$GITHUB_ACTION_PATH
         if [[ "${{ runner.os }}" == "Windows" ]]; then

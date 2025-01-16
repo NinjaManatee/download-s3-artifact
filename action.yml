@@ -42,8 +42,13 @@ outputs:
   download-path:
     description: Path of artifact download
 
+env:
+  S3_ARTIFACTS_BUCKET: ${{ env.S3_ARTIFACTS_BUCKET }}
+  AWS_ACCESS_KEY_ID: ${{ env.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ env.AWS_SECRET_ACCESS_KEY }}
+
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
     - name: Download artifact
       shell: bash

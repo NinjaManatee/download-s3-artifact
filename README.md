@@ -18,6 +18,7 @@ See also [upload-s3-artifact](https://github.com/NBinjaManatee/upload-s3-artifac
     - [Download multiple (filtered) Artifacts to the same directory](#download-multiple-filtered-artifacts-to-the-same-directory)
     - [Download Artifacts from other Workflow Runs or Repositories](#download-artifacts-from-other-workflow-runs-or-repositories)
     -->
+  - [The Future](#the-future)
 
 ## Usage
 
@@ -208,3 +209,7 @@ steps:
     repository: actions/toolkit
     run-id: 1234
 ```
+
+## The Future
+
+<!-- TODO: List TODOs here >

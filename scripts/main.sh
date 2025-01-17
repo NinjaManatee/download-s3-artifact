@@ -10,7 +10,7 @@
 #   - INPUT_MERGE_MULTIPLE - not implemented yet
 #   - INPUT_REPOSITORY - the repository the artifact is associated with
 #   - INPUT_RUN_ID - the run ID the artifact is associated with
-#   - RUNNER_OS - the OS of the runne
+#   - RUNNER_OS - the OS of the runner
 #   - S3_ARTIFACTS_BUCKET - the name of the AWS S3 bucket to use
 #   - AWS_ACCESS_KEY_ID - the AWS access key ID (optional if uploading to a public S3 bucket)
 #   - AWS_SECRET_ACCESS_KEY - the AWS secret access key (optional if uploading to a public S3 bucket)
@@ -144,26 +144,17 @@ fi
 echo "::debug::File downloaded successfully to $TMPFILE"
 #endregion
 
-#region untar downloaded artifact
-# TODO: What does this do and do we need it?
-# if [[ -n "${{ inputs.strip }}" ]]; then
-#   TAR_CLI_ARGS="--strip-components=${{ inputs.strip }}"
-# fi
-
 # Downloaded a tarball, extract it
 # TODO: Should we check the path input to make sure it exists?
 echo "::debug::tar -xzvf '$TMPFILE' -C '$INPUT_PATH' $TAR_CLI_ARGS"
 tar -xzvf "$TMPFILE" -C "$INPUT_PATH" $TAR_CLI_ARGS
 
 # list out everything in the extracted location
-if [[ -n "$RUNNER_DEBUG" ]]; then
-    echo "::debug::Contents of our temporary directory"
-    if [[ "$RUNNER_OS" = "Windows" ]]; then
-        # TODO: Can I make this debug somehow?
-        cmd //c tree //f "$INPUT_PATH"
-    else
-        echo "::debug::$(tree -a "$INPUT_PATH" 2>&1)"
-    fi
+echo "::debug::Contents of our temporary directory"
+if [[ "$RUNNER_OS" = "Windows" ]]; then
+    echo "::debug::$(cmd //c tree //f "$INPUT_PATH")"
+else
+    echo "::debug::$(tree -a "$INPUT_PATH" 2>&1)"
 fi
 #endregion
 

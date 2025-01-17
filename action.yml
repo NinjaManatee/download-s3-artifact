@@ -24,14 +24,12 @@ inputs:
       If false, the downloaded artifacts will be extracted into individual named directories within the specified path.
     required: false
     default: false
-  # TODO: implement repository
   repository:
     description: >
       The repository owner and the repository name joined together by "/".
       If github-token is specified, this is the repository that artifacts will be downloaded from. The default is
       github.repository.
     required: false
-  # TODO: implement run-id
   run-id:
     description: >
       The id of the workflow run where the desired download artifact was uploaded from.
@@ -43,7 +41,7 @@ outputs:
     description: Path of artifact download
 
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
     - name: Download artifact
       shell: bash
@@ -70,25 +68,6 @@ runs:
 
         # read github actions variables
         export RUNNER_OS="${{ runner.os }}"
-
-        # read environment variables
-        # TODO: Are these necessary since they are already environment variables?
-        export ENV_S3_ARTIFACTS_BUCKET="${{ env.S3_ARTIFACTS_BUCKET }}"
-        export ENV_AWS_ACCESS_KEY_ID="${{ env.AWS_ACCESS_KEY_ID }}"
-        export ENV_AWS_SECRET_ACCESS_KEY="${{ env.AWS_SECRET_ACCESS_KEY }}"
-
-        # print inputs for debugging
-        echo "::debug::Inputs:"
-        echo "::debug::     name:                       $INPUT_NAME"
-        echo "::debug::     path:                       $INPUT_PATH"
-        echo "::debug::     pattern:                    $INPUT_PATTERN"
-        echo "::debug::     merge-multiple:             $INPUT_MERGE_MULTIPLE"
-        echo "::debug::     repository:                 $INPUT_REPOSITORY"
-        echo "::debug::     run-id:                     $INPUT_RUN_ID"
-        echo "::debug::     runner.os:                  $RUNNER_OS"
-        echo "::debug::     S3_ARTIFACTS_BUCKET:        $ENV_S3_ARTIFACTS_BUCKET"
-        echo "::debug::     ENV_AWS_ACCESS_KEY_ID:      $ENV_AWS_ACCESS_KEY_ID"
-        echo "::debug::     ENV_AWS_SECRET_ACCESS_KEY:  $ENV_AWS_SECRET_ACCESS_KEY"
 
         ACTION_PATH=$GITHUB_ACTION_PATH
         if [[ "${{ runner.os }}" == "Windows" ]]; then

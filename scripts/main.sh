@@ -10,10 +10,10 @@
 #   - INPUT_MERGE_MULTIPLE - not implemented yet
 #   - INPUT_REPOSITORY - the repository the artifact is associated with
 #   - INPUT_RUN_ID - the run ID the artifact is associated with
-#   - RUNNER_OS - the OS of the runne
-#   - ENV_S3_ARTIFACTS_BUCKET - the name of the AWS S3 bucket to use
-#   - ENV_AWS_ACCESS_KEY_ID - the AWS access key ID (optional if uploading to a public S3 bucket)
-#   - ENV_AWS_SECRET_ACCESS_KEY - the AWS secret access key (optional if uploading to a public S3 bucket)
+#   - RUNNER_OS - the OS of the runner
+#   - S3_ARTIFACTS_BUCKET - the name of the AWS S3 bucket to use
+#   - AWS_ACCESS_KEY_ID - the AWS access key ID (optional if uploading to a public S3 bucket)
+#   - AWS_SECRET_ACCESS_KEY - the AWS secret access key (optional if uploading to a public S3 bucket)
 #   - DRY_RUN - whether to run without uploading to AWS (optional, set to true to enable dry run)
 #
 # based on open-turo/actions-s3-artifact
@@ -37,9 +37,9 @@ echo "::debug::    INPUT_MERGE_MULTIPLE:        $INPUT_MERGE_MULTIPLE"
 echo "::debug::    INPUT_REPOSITORY:            $INPUT_REPOSITORY"
 echo "::debug::    INPUT_RUN_ID:                $INPUT_RUN_ID"
 echo "::debug::    RUNNER_OS:                   $RUNNER_OS"
-echo "::debug::    ENV_S3_ARTIFACTS_BUCKET:     $ENV_S3_ARTIFACTS_BUCKET"
-echo "::debug::    ENV_AWS_ACCESS_KEY_ID:       $ENV_AWS_ACCESS_KEY_ID"
-echo "::debug::    ENV_AWS_SECRET_ACCESS_KEY:   $ENV_AWS_SECRET_ACCESS_KEY"
+echo "::debug::    S3_ARTIFACTS_BUCKET:         $S3_ARTIFACTS_BUCKET"
+echo "::debug::    AWS_ACCESS_KEY_ID:           $AWS_ACCESS_KEY_ID"
+echo "::debug::    AWS_SECRET_ACCESS_KEY:       $AWS_SECRET_ACCESS_KEY"
 #endregion
 
 #region validate input variables
@@ -77,13 +77,13 @@ fi
 
 if [[ "$DRY_RUN" != "true" ]]; then
     # check whether AWS credentials are specified and warn if they aren't
-    if [[ "$ENV_AWS_ACCESS_KEY_ID" == "" || "$ENV_AWS_SECRET_ACCESS_KEY" == "" ]]; then
+    if [[ "$AWS_ACCESS_KEY_ID" == "" || "$AWS_SECRET_ACCESS_KEY" == "" ]]; then
         echo "::warn::AWS_ACCESS_KEY_ID and/or AWS_SECRET_ACCESS_KEY is missing from environment variables."
         ERROR=true
     fi
 
     # check whether S3_ARTIFACTS_BUCKET is defined
-    if [[ "$ENV_S3_ARTIFACTS_BUCKET" == "" ]]; then
+    if [[ "$S3_ARTIFACTS_BUCKET" == "" ]]; then
         echo "::error::S3_ARTIFACTS_BUCKET is missing from environment variables."
         ERROR=true
     fi
@@ -112,17 +112,17 @@ mkdir -p "$TMP_ARTIFACT"
 echo "::debug::The artifact directory is $TMP_ARTIFACT"
 
 # Create a unique directory for this particular action run
-TMPDIR="$(mktemp -d -p "$TMP_ARTIFACT" "download.XXXXXXXX")"
-mkdir -p "$TMPDIR"
-echo "::debug::Created temporary directory $TMPDIR"
+TMP_DIRECTORY="$(mktemp -d -p "$TMP_ARTIFACT" "download.XXXXXXXX")"
+mkdir -p "$TMP_DIRECTORY"
+echo "::debug::Created temporary directory $TMP_DIRECTORY"
 #endregion
 
 #region download artifact from AWS s3
 # Target for download, this can be a single file or a tarball
-TMPFILE="$TMPDIR/artifacts.tgz"
+TMP_FILE="$TMP_DIRECTORY/artifacts.tgz"
 
 # Get AWS S3 bucket URI and ensure it starts with "s3://"
-S3URI="$ENV_S3_ARTIFACTS_BUCKET"
+S3URI="$S3_ARTIFACTS_BUCKET"
 if [[ "$S3URI" != s3://* ]]; then
     echo "::debug::Adding s3:// to bucket URI"
     S3URI="s3://$S3URI"
@@ -134,36 +134,27 @@ KEY="$INPUT_REPOSITORY/$INPUT_RUN_ID/$(urlencode $INPUT_NAME).tgz"
 S3URI="${S3URI%/}/$KEY"
 
 # Try to download
-echo "::debug::aws s3 cp '$S3URI' '$TMPFILE'"
+echo "::debug::aws s3 cp '$S3URI' '$TMP_FILE'"
 if [[ "$DRY_RUN" == "true" ]]; then
     # copy test file for testing
-    cp "./artifacts.tgz" "$TMPFILE"
+    cp "./artifacts.tgz" "$TMP_FILE"
 else
-    aws s3 cp "$S3URI" "$TMPFILE"
+    aws s3 cp "$S3URI" "$TMP_FILE"
 fi
-echo "::debug::File downloaded successfully to $TMPFILE"
+echo "::debug::File downloaded successfully to $TMP_FILE"
 #endregion
-
-#region untar downloaded artifact
-# TODO: What does this do and do we need it?
-# if [[ -n "${{ inputs.strip }}" ]]; then
-#   TAR_CLI_ARGS="--strip-components=${{ inputs.strip }}"
-# fi
 
 # Downloaded a tarball, extract it
 # TODO: Should we check the path input to make sure it exists?
-echo "::debug::tar -xzvf '$TMPFILE' -C '$INPUT_PATH' $TAR_CLI_ARGS"
-tar -xzvf "$TMPFILE" -C "$INPUT_PATH" $TAR_CLI_ARGS
+echo "::debug::tar -xzvf '$TMP_FILE' -C '$INPUT_PATH' $TAR_CLI_ARGS"
+tar -xzvf "$TMP_FILE" -C "$INPUT_PATH" $TAR_CLI_ARGS
 
 # list out everything in the extracted location
-if [[ -n "$RUNNER_DEBUG" ]]; then
-    echo "::debug::Contents of our temporary directory"
-    if [[ "$RUNNER_OS" = "Windows" ]]; then
-        # TODO: Can I make this debug somehow?
-        cmd //c tree //f "$INPUT_PATH"
-    else
-        echo "::debug::$(tree -a "$INPUT_PATH" 2>&1)"
-    fi
+echo "::debug::Contents of our temporary directory"
+if [[ "$RUNNER_OS" = "Windows" ]]; then
+    echo "::debug::$(cmd //c tree //f "$INPUT_PATH")"
+else
+    echo "::debug::$(tree -a "$INPUT_PATH" 2>&1)"
 fi
 #endregion
 

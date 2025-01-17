@@ -112,14 +112,14 @@ mkdir -p "$TMP_ARTIFACT"
 echo "::debug::The artifact directory is $TMP_ARTIFACT"
 
 # Create a unique directory for this particular action run
-TMPDIR="$(mktemp -d -p "$TMP_ARTIFACT" "download.XXXXXXXX")"
-mkdir -p "$TMPDIR"
-echo "::debug::Created temporary directory $TMPDIR"
+TMP_DIRECTORY="$(mktemp -d -p "$TMP_ARTIFACT" "download.XXXXXXXX")"
+mkdir -p "$TMP_DIRECTORY"
+echo "::debug::Created temporary directory $TMP_DIRECTORY"
 #endregion
 
 #region download artifact from AWS s3
 # Target for download, this can be a single file or a tarball
-TMPFILE="$TMPDIR/artifacts.tgz"
+TMP_FILE="$TMP_DIRECTORY/artifacts.tgz"
 
 # Get AWS S3 bucket URI and ensure it starts with "s3://"
 S3URI="$S3_ARTIFACTS_BUCKET"
@@ -134,20 +134,20 @@ KEY="$INPUT_REPOSITORY/$INPUT_RUN_ID/$(urlencode $INPUT_NAME).tgz"
 S3URI="${S3URI%/}/$KEY"
 
 # Try to download
-echo "::debug::aws s3 cp '$S3URI' '$TMPFILE'"
+echo "::debug::aws s3 cp '$S3URI' '$TMP_FILE'"
 if [[ "$DRY_RUN" == "true" ]]; then
     # copy test file for testing
-    cp "./artifacts.tgz" "$TMPFILE"
+    cp "./artifacts.tgz" "$TMP_FILE"
 else
-    aws s3 cp "$S3URI" "$TMPFILE"
+    aws s3 cp "$S3URI" "$TMP_FILE"
 fi
-echo "::debug::File downloaded successfully to $TMPFILE"
+echo "::debug::File downloaded successfully to $TMP_FILE"
 #endregion
 
 # Downloaded a tarball, extract it
 # TODO: Should we check the path input to make sure it exists?
-echo "::debug::tar -xzvf '$TMPFILE' -C '$INPUT_PATH' $TAR_CLI_ARGS"
-tar -xzvf "$TMPFILE" -C "$INPUT_PATH" $TAR_CLI_ARGS
+echo "::debug::tar -xzvf '$TMP_FILE' -C '$INPUT_PATH' $TAR_CLI_ARGS"
+tar -xzvf "$TMP_FILE" -C "$INPUT_PATH" $TAR_CLI_ARGS
 
 # list out everything in the extracted location
 echo "::debug::Contents of our temporary directory"

@@ -55,7 +55,20 @@ runs:
         if [[ "${{ inputs.path }}" == "" ]]; then
           export INPUT_PATH="${{ github.workspace }}"
         else
-          export INPUT_PATH="${{ inputs.path }}"
+          # Because of some weirdness with bash GitHub action steps work, if you pass in a string that ends with a 
+          # backslash character (e.g. a windows style path that ends with a backslash) and you put quotes around the 
+          # input, then you get the error `unexpected EOF while looking for matching "'"`, and the script crashes. To 
+          # work around this issue, this action writes the input to a text file, then reads the text file to get the 
+          # value of the passed in variable, minus the backslash at the end.
+          TMP_FILE="$(mktemp)"
+          echo ${{ inputs.name }} > "$TMP_FILE"
+          INPUT_PATH=$(cat "$TMP_FILE")
+          rm "$TMP_FILE"        
+          export INPUT_PATH="$INPUT_PATH"
+          if [[ "${{ runner.os }}" == "Windows" ]]; then
+            # Need to make sure path in INPUT_PATH is a unix path
+            export INPUT_PATH="$(cygpath -u "$INPUT_PATH")"
+          fi
         fi
         if [[ "${{ runner.os }}" == "Windows" ]]; then
           # Need to make sure path in INPUT_PATH is a unix path

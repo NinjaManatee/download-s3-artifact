@@ -53,6 +53,10 @@ runs:
         else
           export INPUT_PATH="${{ inputs.path }}"
         fi
+        if [[ "${{ runner.os }}" == "Windows" ]]; then
+          # Need to make sure path in INPUT_PATH is a unix path
+          INPUT_PATH=$(cygpath -u "$INPUT_PATH")
+        fi
         export INPUT_PATTERN="${{ inputs.pattern }}"
         export INPUT_MERGE_MULTIPLE="${{ inputs.merge-multiple }}"
         if [[ "${{ inputs.repository }}" == "" ]]; then

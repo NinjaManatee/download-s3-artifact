@@ -25,6 +25,7 @@ set -e
 #region import scripts
 DIR="${BASH_SOURCE%/*}"
 if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
+# shellcheck disable=SC1091
 . "$DIR/encoding.sh"
 #endregion
 
@@ -130,7 +131,7 @@ fi
 
 # S3 URI to download
 # Build key to object in S3 bucket
-KEY="$INPUT_REPOSITORY/$INPUT_RUN_ID/$(urlencode $INPUT_NAME).tgz"
+KEY="$INPUT_REPOSITORY/$INPUT_RUN_ID/$(urlencode "$INPUT_NAME").tgz"
 S3URI="${S3URI%/}/$KEY"
 
 # Try to download
@@ -146,8 +147,8 @@ echo "::debug::File downloaded successfully to $TMP_FILE"
 
 # Downloaded a tarball, extract it
 # TODO: Should we check the path input to make sure it exists?
-echo "::debug::tar -xzvf '$TMP_FILE' -C '$INPUT_PATH' $TAR_CLI_ARGS"
-tar -xzvf "$TMP_FILE" -C "$INPUT_PATH" $TAR_CLI_ARGS
+echo "::debug::tar -xzvf '$TMP_FILE' -C '$INPUT_PATH'"
+tar -xzvf "$TMP_FILE" -C "$INPUT_PATH"
 
 # list out everything in the extracted location
 echo "::debug::Contents of our temporary directory"
@@ -161,12 +162,12 @@ fi
 #region generate outputs
 # set output
 # TODO: I don't think this output is correct. Need to investigate.
-echo "download-path='$INPUT_PATH'" >> $GITHUB_OUTPUT
+echo "download-path='$INPUT_PATH'" >> "$GITHUB_OUTPUT"
 #endregion
 
 #region clean up temp dir
 # TODO: move to clean up step?
 if [[ "$DRY_RUN" != "true" ]]; then
-    rm -rf $TMP_ARTIFACT
+    rm -rf "$TMP_ARTIFACT"
 fi
 #endregion

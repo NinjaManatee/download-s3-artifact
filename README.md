@@ -212,4 +212,10 @@ steps:
 
 ## The Future
 
-<!-- TODO: List TODOs here >
+1. Implement pattern parameter (action.yml)
+1. Implement merge-multiple parameter (action.yml)
+1. Should we check the path input to make sure it exists? (scripts/main.sh)
+1. I don't think this output is correct. Need to investigate. (scripts/main.sh)
+1. Move to clean up step? (scripts/main.sh)
+1. Testing
+1. Release workflow
